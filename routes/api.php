@@ -28,12 +28,24 @@ Route::namespace('Api\V1')->group(function () {
         Route::post('io-register', [AuthController::class, 'register']);
         Route::post('io-login', [AuthController::class, 'login']);
 
+        //stocks
         Route::get('stocks', [StockController::class, 'index']);
         Route::post('stocks', [StockController::class, 'store']);
         Route::get('stocks/{stock}', [StockController::class, 'show']);
         Route::put('stocks/{stock}', [StockController::class, 'update']);
         Route::delete('stocks/{stock}', [StockController::class, 'destroy']);
 
+        //purchase
+        // Purchases
+        Route::get('purchases', [PurchaseController::class, 'index']);
+        Route::get('purchaseReport', [PurchaseController::class, 'reportPurchase']);
+        Route::get('purchases/{purchase}', [PurchaseController::class, 'show']);
+        Route::post('purchases', [PurchaseController::class, 'store']);
+        Route::put('purchases/{purchase}', [PurchaseController::class, 'update']);
+        Route::delete('purchases/{purchase}', [PurchaseController::class, 'destroy']);
+        Route::delete('purchase_items/{purchase_item}', [PurchaseController::class, 'deletePurchaseItem']);
+
+        
         Route::middleware(['auth:api'])->group(function () {
             // Users
             Route::get('users', [AuthController::class, 'index']);
@@ -105,14 +117,14 @@ Route::namespace('Api\V1')->group(function () {
             Route::put('staffs/{staff}', [StaffController::class, 'update']);
             Route::delete('staffs/{staff}', [StaffController::class, 'destroy']);
 
-            // Purchases
-            Route::get('purchases', [PurchaseController::class, 'index']);
-            Route::get('purchaseReport', [PurchaseController::class, 'reportPurchase']);
-            Route::get('purchases/{purchase}', [PurchaseController::class, 'show']);
-            Route::post('purchases', [PurchaseController::class, 'store']);
-            Route::put('purchases/{purchase}', [PurchaseController::class, 'update']);
-            Route::delete('purchases/{purchase}', [PurchaseController::class, 'destroy']);
-            Route::delete('purchase_items/{purchase_item}', [PurchaseController::class, 'deletePurchaseItem']);
+            // // Purchases
+            // Route::get('purchases', [PurchaseController::class, 'index']);
+            // Route::get('purchaseReport', [PurchaseController::class, 'reportPurchase']);
+            // Route::get('purchases/{purchase}', [PurchaseController::class, 'show']);
+            // Route::post('purchases', [PurchaseController::class, 'store']);
+            // Route::put('purchases/{purchase}', [PurchaseController::class, 'update']);
+            // Route::delete('purchases/{purchase}', [PurchaseController::class, 'destroy']);
+            // Route::delete('purchase_items/{purchase_item}', [PurchaseController::class, 'deletePurchaseItem']);
 
             // Purchase Credits
             Route::post('purchase-credits', [PurchaseCreditController::class, 'store']);

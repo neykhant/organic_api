@@ -188,8 +188,6 @@ class ItemController extends Controller
         return \Response::make(file_get_contents($storagePath), 200, $headers);
     }
 
-
-
     public function batchInsert(ItemRequest $request)
     {
         // request()->validate([

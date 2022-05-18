@@ -34,6 +34,7 @@ class PurchaseController extends Controller
 
     public function store(PurchaseRequest $request)
     {
+
         DB::beginTransaction();
         try {
 
@@ -44,7 +45,8 @@ class PurchaseController extends Controller
             $purchase_items = $request->get('purchase_items');
 
             $user = Auth::user();
-            $shop_id = $user->shop_id;
+            // $shop_id = $user->shop_id;
+            $shop_id = 1;
 
             $purchase = new Purchase();
             $purchase->date = $date;
@@ -53,7 +55,6 @@ class PurchaseController extends Controller
             $purchase->paid = $paid;
             $purchase->credit = $whole_total - $paid;
             $purchase->shop_id = $shop_id;
-
             $purchase->save();
 
             foreach ($purchase_items as $purchase_item) {
@@ -66,24 +67,26 @@ class PurchaseController extends Controller
 
                 $purchase_item_model->save();
 
-                $stock = Stock::where('item_id', '=', $purchase_item_model->item_id)->where('shop_id', '=', $shop_id)->first();
-                if ($stock == null) {
-                    $new_stock = new Stock();
-                    $new_stock->quantity = $purchase_item_model->quantity;
-                    $new_stock->item_id = $purchase_item_model->item_id;
-                    $new_stock->shop_id = $shop_id;
+                // $stock = Stock::where('item_id', '=', $purchase_item_model->item_id)->where('shop_id', '=', $shop_id)->first();
+                // if ($stock == null) {
+                //     $new_stock = new Stock();
+                //     $new_stock->quantity = $purchase_item_model->quantity;
+                //     $new_stock->item_id = $purchase_item_model->item_id;
+                //     $new_stock->shop_id = $shop_id;
 
-                    $new_stock->save();
-                } else {
-                    $stock->quantity += $purchase_item_model->quantity;
+                //     $new_stock->save();
+                // } else {
+                //     $stock->quantity += $purchase_item_model->quantity;
 
-                    $stock->save();
-                }
+                //     $stock->save();
+                // }
             }
+
+
             DB::commit();
             return jsend_success(new PurchaseResource($purchase), JsonResponse::HTTP_CREATED);
         } catch (Exception $ex) {
-            
+
             DB::rollBack();
             Log::error(__('api.saved-failed', ['model' => class_basename(Purchase::class)]), [
                 'code' => $ex->getCode(),
@@ -94,9 +97,7 @@ class PurchaseController extends Controller
                 $ex->getCode(),
                 ErrorType::SAVE_ERROR,
             ]);
-            
         }
-        
     }
 
     public function show(Purchase $purchase)
@@ -238,7 +239,7 @@ class PurchaseController extends Controller
             return jsend_error(["error" => 'Data Not Found.'], JsonResponse::HTTP_NOT_FOUND);
         }
     }
-    
+
     public function reportPurchase()
     {
         $purchases = Purchase::with('merchant');
@@ -246,7 +247,7 @@ class PurchaseController extends Controller
         $purchases = $purchases->groupBy("merchant_id")->select(DB::raw('sum(whole_total) as whole_total'), DB::raw('sum(paid) as paid'), DB::raw('sum(credit) as credit'), 'merchant_id');
 
         if (request()->start_date && request()->end_date) {
-            $purchases = $purchases->whereBetween("created_at", [request()->start_date ." 00:00:00", request()->end_date ." 23:59:59"]);
+            $purchases = $purchases->whereBetween("created_at", [request()->start_date . " 00:00:00", request()->end_date . " 23:59:59"]);
         }
 
         $purchases = $purchases->get();
