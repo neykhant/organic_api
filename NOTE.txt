@@ -1,0 +1,3 @@
+DB_DATABASE=cp115910_organic
+DB_USERNAME=cp115910_nyihtut
+DB_PASSWORD=clovermandalay123
