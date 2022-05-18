@@ -57,6 +57,7 @@ class ItemController extends Controller
             'image' => 'required',
         ]);
         
+    
         DB::beginTransaction();
         try {
             $code = trim($request->input(self::CODE));
