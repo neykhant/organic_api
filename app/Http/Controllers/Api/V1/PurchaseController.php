@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Log;
 
 class PurchaseController extends Controller
 {
+    const PURCHASE_ITEMS = "purchase_items";
+
+
     public function index()
     {
         $user = Auth::user();
@@ -42,7 +45,7 @@ class PurchaseController extends Controller
             $merchant_id = $request->get('merchant_id');
             $whole_total = $request->get('whole_total');
             $paid = $request->get('paid');
-            $purchase_items = $request->get('purchase_items');
+
 
             $user = Auth::user();
             // $shop_id = $user->shop_id;
@@ -57,6 +60,9 @@ class PurchaseController extends Controller
             $purchase->shop_id = $shop_id;
             $purchase->save();
 
+            $purchase_items = $request->get(self::PURCHASE_ITEMS);
+
+            $saved_data = [];
             foreach ($purchase_items as $purchase_item) {
                 $purchase_item_model = new PurchaseItem();
                 $purchase_item_model->purchase_id = $purchase->id;
@@ -64,24 +70,11 @@ class PurchaseController extends Controller
                 $purchase_item_model->price = $purchase_item["price"];
                 $purchase_item_model->quantity = $purchase_item["quantity"];
                 $purchase_item_model->subtotal = $purchase_item["subtotal"];
-
+                array_push($saved_data, $purchase_item_model);
                 $purchase_item_model->save();
-
-                // $stock = Stock::where('item_id', '=', $purchase_item_model->item_id)->where('shop_id', '=', $shop_id)->first();
-                // if ($stock == null) {
-                //     $new_stock = new Stock();
-                //     $new_stock->quantity = $purchase_item_model->quantity;
-                //     $new_stock->item_id = $purchase_item_model->item_id;
-                //     $new_stock->shop_id = $shop_id;
-
-                //     $new_stock->save();
-                // } else {
-                //     $stock->quantity += $purchase_item_model->quantity;
-
-                //     $stock->save();
-                // }
             }
 
+            return "success";
 
             DB::commit();
             return jsend_success(new PurchaseResource($purchase), JsonResponse::HTTP_CREATED);

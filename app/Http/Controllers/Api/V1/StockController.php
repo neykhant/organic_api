@@ -11,8 +11,8 @@ use App\Utils\ErrorType;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Log;
-use Request;
 
 class StockController extends Controller
 {
@@ -79,12 +79,13 @@ class StockController extends Controller
         return jsend_success(new StockResource($stock));
     }
 
-    public function update(StockRequest $request, Stock $stock)
+    public function update(Request $request, Stock $stock)
     {
+        // return $request->all();
         try {
-            $stock->quantity =  trim($request->input(self::QTY));
-            $stock->item_id =  trim($request->input(self::ITEM));
-            $stock->shop_id =  trim($request->input(self::SHOP_ID));
+            $stock->quantity =  trim($request->get(self::QTY));
+            $stock->item_id =  trim($request->get(self::ITEM));
+            $stock->shop_id =  trim($request->get(self::SHOP_ID));
             $stock->save();
             return jsend_success(new StockResource($stock), JsonResponse::HTTP_CREATED);
         } catch (Exception $ex) {

@@ -1,3 +1,20 @@
 DB_DATABASE=cp115910_organic
 DB_USERNAME=cp115910_nyihtut
 DB_PASSWORD=clovermandalay123
+
+
+
+
+// $stock = Stock::where('item_id', '=', $purchase_item_model->item_id)->where('shop_id', '=', $shop_id)->first();
+                // if ($stock == null) {
+                //     $new_stock = new Stock();
+                //     $new_stock->quantity = $purchase_item_model->quantity;
+                //     $new_stock->item_id = $purchase_item_model->item_id;
+                //     $new_stock->shop_id = $shop_id;
+
+                //     $new_stock->save();
+                // } else {
+                //     $stock->quantity += $purchase_item_model->quantity;
+
+                //     $stock->save();
+                // }
